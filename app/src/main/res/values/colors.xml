@@ -2,4 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="cl_divider_horizontal">#19000000</color>
+    <color name="upbit_primary">#274A93</color>
+    <color name="upbit_on_primary">#2F5699</color>
 </resources>

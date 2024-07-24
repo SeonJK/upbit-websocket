@@ -8,5 +8,32 @@
     android:orientation="vertical"
     tools:context=".view.MainActivity">
 
+    <EditText
+        android:id="@+id/coinSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="8dp"
+        android:drawableStart="@drawable/ic_search"
+        android:textColorHint="@color/upbit_on_primary"
+        android:hint="@string/search_hint"
+        android:backgroundTint="@color/upbit_primary" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingEnd="4dp">
+
+        <include
+            android:id="@+id/listTitle"
+            layout="@layout/coin_info_title" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/coin_info_item" />
+
+    </LinearLayout>
 
 </LinearLayout>

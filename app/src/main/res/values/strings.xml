@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Upbit-WebSocket</string>
+    <string name="search_hint">코인명/심볼 검색</string>
+    <string name="current_price">현재가</string>
+    <string name="acc_price">거래대금</string>
 </resources>

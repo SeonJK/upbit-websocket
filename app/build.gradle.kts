@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -48,4 +49,24 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 
+    // OkHttp3
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.12.0"))
+    implementation("com.squareup.okhttp3:okhttp")
+
+    // Gson
+    implementation("com.google.code.gson:gson:2.10.1")
+
+    // ViewModel
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
+    implementation("androidx.activity:activity-ktx:1.9.1")
+
+    // LiveData
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
+
+    // Room
+    val roomVersion = "2.6.1"
+    implementation("androidx.room:room-runtime:$roomVersion")
+    annotationProcessor("androidx.room:room-compiler:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
 }

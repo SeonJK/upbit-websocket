@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.seonjk.upbit_websocket.data.local.CoinDao
 import com.seonjk.upbit_websocket.data.model.CoinListItem
+import com.seonjk.upbit_websocket.data.model.SortType
 import com.seonjk.upbit_websocket.data.repository.LocalRepository
 import com.seonjk.upbit_websocket.data.repository.RemoteRepository
 import kotlinx.coroutines.Dispatchers
@@ -33,11 +34,14 @@ class MainViewModel(private val coinDao: CoinDao): ViewModel() {
     /** DB에서 가져온 코인 리스트 */
     val coinList: StateFlow<List<CoinListItem>> = _coinList
 
-    private val _sortedByCurrentPrice = MutableStateFlow(false)
-    val sortedByCurrentPrice: StateFlow<Boolean> = _sortedByCurrentPrice
+    private val _sortedByCurrentPrice = MutableStateFlow(SortType.NONE)
+    val sortedByCurrentPrice: StateFlow<SortType> = _sortedByCurrentPrice
 
-    private val _sortedBydAccPrice = MutableStateFlow(false)
-    val sortedByAccPrice: StateFlow<Boolean> = _sortedBydAccPrice
+    private val _sortedBydAccPrice = MutableStateFlow(SortType.NONE)
+    val sortedByAccPrice: StateFlow<SortType> = _sortedBydAccPrice
+
+    private val _searchText = MutableStateFlow("")
+    val searchText: StateFlow<String> = _searchText
 
 
     /**
@@ -82,13 +86,17 @@ class MainViewModel(private val coinDao: CoinDao): ViewModel() {
         }
     }
 
-    fun setSortedByCurrentPrice(status: Boolean) {
+    fun setSortedByCurrentPrice(status: SortType) {
         _sortedByCurrentPrice.value = status
     }
 
 
-    fun setSortedByAccPrice(status: Boolean) {
+    fun setSortedByAccPrice(status: SortType) {
         _sortedBydAccPrice.value = status
+    }
+
+    fun setSearchText(text: String) {
+        _searchText.value = text
     }
 
     /**
@@ -97,20 +105,27 @@ class MainViewModel(private val coinDao: CoinDao): ViewModel() {
      *
      * @param text 검색창에 입력한 문자열
      * */
-    fun selectItems(text: String = "") = viewModelScope.launch(Dispatchers.IO) {
-        localRepository.selectItems(text)
+    fun selectItems() = viewModelScope.launch(Dispatchers.IO) {
+        localRepository.selectItems(_searchText.value)
             .map {
-                if (_sortedByCurrentPrice.value) {
+                if (_sortedByCurrentPrice.value == SortType.ASCENDING) {
                     it.sortedBy { it.tradePrice }
+                    return@map it
+                } else if (_sortedByCurrentPrice.value == SortType.DESCENDING) {
+                    it.sortedByDescending { it.tradePrice }
+                    return@map it
                 }
-                if (_sortedBydAccPrice.value) {
+
+                if (_sortedBydAccPrice.value == SortType.ASCENDING) {
                     it.sortedBy { it.accTradePrice24h }
+                } else if(_sortedBydAccPrice.value == SortType.DESCENDING) {
+                    it.sortedByDescending { it.accTradePrice24h }
                 }
                 it
             }
             .collect {
-            _coinList.value = it
-        }
+                _coinList.value = it
+            }
     }
 }
 

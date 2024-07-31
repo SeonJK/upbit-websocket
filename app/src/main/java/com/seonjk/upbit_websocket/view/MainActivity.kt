@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.seonjk.upbit_websocket.UpbitApplication
+import com.seonjk.upbit_websocket.data.model.SortType
 import com.seonjk.upbit_websocket.databinding.ActivityMainBinding
 import com.seonjk.upbit_websocket.view.adapter.CoinAdapter
 import com.seonjk.upbit_websocket.viewmodel.MainViewModel
@@ -62,7 +63,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.coinSearch.addTextChangedListener {
-            mainViewModel.selectItems(binding.coinSearch.text.toString())
+            mainViewModel.setSearchText(binding.coinSearch.text.toString())
+            mainViewModel.selectItems()
         }
     }
 
@@ -84,24 +86,30 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun onButtonClick() {
-        binding.listTitle.currentPrice.setOnClickListener { clickCurrentPriceTitle() }
-        binding.listTitle.accPrice.setOnClickListener { clickAccPriceTitle() }
+    private fun onButtonClick() = with(binding.listTitle) {
+        currentPrice.setOnClickListener { clickCurrentPriceTitle() }
+        accPrice.setOnClickListener { clickAccPriceTitle() }
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun clickCurrentPriceTitle() {
         Log.d(TAG, "clickCurrentPriceTitle()")
-        mainViewModel.setSortedByCurrentPrice(mainViewModel.sortedByCurrentPrice.value.not())
-        mainViewModel.setSortedByAccPrice(false)
-        coinAdapter.notifyDataSetChanged()
+        when (mainViewModel.sortedByCurrentPrice.value) {
+            SortType.NONE, SortType.ASCENDING -> mainViewModel.setSortedByCurrentPrice(SortType.DESCENDING)
+            SortType.DESCENDING -> mainViewModel.setSortedByCurrentPrice(SortType.ASCENDING)
+        }
+        mainViewModel.setSortedByAccPrice(SortType.NONE)
+        mainViewModel.selectItems()
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun clickAccPriceTitle() {
         Log.d(TAG, "clickAccPriceTitle()")
-        mainViewModel.setSortedByAccPrice(mainViewModel.sortedByAccPrice.value.not())
-        mainViewModel.setSortedByCurrentPrice(false)
-        coinAdapter.notifyDataSetChanged()
+        when (mainViewModel.sortedByAccPrice.value) {
+            SortType.NONE, SortType.ASCENDING -> mainViewModel.setSortedByAccPrice(SortType.DESCENDING)
+            SortType.DESCENDING -> mainViewModel.setSortedByAccPrice(SortType.ASCENDING)
+        }
+        mainViewModel.setSortedByCurrentPrice(SortType.NONE)
+        mainViewModel.selectItems()
     }
 }

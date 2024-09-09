@@ -92,8 +92,9 @@ class MainActivity : AppCompatActivity() {
     private fun clickCurrentPriceTitle() {
         Log.d(TAG, "clickCurrentPriceTitle()")
         when (mainViewModel.sortedByCurrentPrice.value) {
-            SortType.NONE, SortType.ASCENDING -> mainViewModel.setSortedByCurrentPrice(SortType.DESCENDING)
-            SortType.DESCENDING -> mainViewModel.setSortedByCurrentPrice(SortType.ASCENDING)
+            SortType.NONE -> mainViewModel.setSortedByCurrentPrice(SortType.ASCENDING)
+            SortType.ASCENDING -> mainViewModel.setSortedByCurrentPrice(SortType.DESCENDING)
+            SortType.DESCENDING -> mainViewModel.setSortedByCurrentPrice(SortType.NONE)
         }
         mainViewModel.setSortedByAccPrice(SortType.NONE)
         mainViewModel.selectItems()
@@ -102,8 +103,9 @@ class MainActivity : AppCompatActivity() {
     private fun clickAccPriceTitle() {
         Log.d(TAG, "clickAccPriceTitle()")
         when (mainViewModel.sortedByAccPrice.value) {
-            SortType.NONE, SortType.ASCENDING -> mainViewModel.setSortedByAccPrice(SortType.DESCENDING)
-            SortType.DESCENDING -> mainViewModel.setSortedByAccPrice(SortType.ASCENDING)
+            SortType.NONE -> mainViewModel.setSortedByAccPrice(SortType.ASCENDING)
+            SortType.ASCENDING -> mainViewModel.setSortedByAccPrice(SortType.DESCENDING)
+            SortType.DESCENDING -> mainViewModel.setSortedByAccPrice(SortType.NONE)
         }
         mainViewModel.setSortedByCurrentPrice(SortType.NONE)
         mainViewModel.selectItems()

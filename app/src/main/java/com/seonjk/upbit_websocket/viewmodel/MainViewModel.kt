@@ -12,6 +12,7 @@ import com.seonjk.upbit_websocket.data.repository.RemoteRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -42,7 +43,6 @@ class MainViewModel(private val coinDao: CoinDao): ViewModel() {
 
     private val _searchText = MutableStateFlow("")
     val searchText: StateFlow<String> = _searchText
-
 
     /**
      * 웹소켓 연결
@@ -90,7 +90,6 @@ class MainViewModel(private val coinDao: CoinDao): ViewModel() {
         _sortedByCurrentPrice.value = status
     }
 
-
     fun setSortedByAccPrice(status: SortType) {
         _sortedBydAccPrice.value = status
     }
@@ -102,28 +101,30 @@ class MainViewModel(private val coinDao: CoinDao): ViewModel() {
     /**
      * 검색창에 입력한 문자열을 기반으로 DB에 검색하여 리스트를 반환
      * text가 null이면 모든 코인 리스트를 반환
-     *
-     * @param text 검색창에 입력한 문자열
      * */
     fun selectItems() = viewModelScope.launch(Dispatchers.IO) {
-        localRepository.selectItems(_searchText.value)
+        localRepository.selectItems(searchText.value)
+            .map {
+                it.filter { item ->
+                    item.code.contains(searchText.value, ignoreCase = true)
+                }
+            }
             .map {
                 if (_sortedByCurrentPrice.value == SortType.ASCENDING) {
-                    it.sortedBy { it.tradePrice }
-                    return@map it
+                    return@map it.sortedBy { it.tradePrice }
                 } else if (_sortedByCurrentPrice.value == SortType.DESCENDING) {
-                    it.sortedByDescending { it.tradePrice }
-                    return@map it
+                    return@map it.sortedByDescending { it.tradePrice }
                 }
 
                 if (_sortedBydAccPrice.value == SortType.ASCENDING) {
-                    it.sortedBy { it.accTradePrice24h }
+                    return@map it.sortedBy { it.accTradePrice24h }
                 } else if(_sortedBydAccPrice.value == SortType.DESCENDING) {
-                    it.sortedByDescending { it.accTradePrice24h }
+                    return@map it.sortedByDescending { it.accTradePrice24h }
                 }
                 it
             }
             .collect {
+                Log.d(TAG, "selectItems() it=$it")
                 _coinList.value = it
             }
     }

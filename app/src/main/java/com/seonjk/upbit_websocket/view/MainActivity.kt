@@ -49,7 +49,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun subscribeUi() {
         lifecycleScope.launch {
-
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 mainViewModel.socketStatus.collectLatest { status ->
                     Log.d(TAG, "subscribeUi() status=$status")
@@ -80,7 +79,6 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             mainViewModel.coinList.collectLatest { list ->
-                Log.d(TAG, "setRecyclerView() list=$list")
                 coinAdapter.submitList(list)
             }
         }
@@ -91,7 +89,6 @@ class MainActivity : AppCompatActivity() {
         accPrice.setOnClickListener { clickAccPriceTitle() }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun clickCurrentPriceTitle() {
         Log.d(TAG, "clickCurrentPriceTitle()")
         when (mainViewModel.sortedByCurrentPrice.value) {
@@ -102,7 +99,6 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.selectItems()
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun clickAccPriceTitle() {
         Log.d(TAG, "clickAccPriceTitle()")
         when (mainViewModel.sortedByAccPrice.value) {

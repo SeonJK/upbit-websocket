@@ -13,7 +13,7 @@
 
 <img src="/imgRes/upbit_sorting_acc_asc.png" width="400" height="700" /> <img src="/imgRes/upbit_sorting_acc_desc.png" width="400" height="700" />
 
-<img src="/imgRes/upbit_sorting_trade_asc.png" width="400" height="700" /> <img src="/imgRes/upbit_sorting_trade_asc.png" width="400" height="700" />
+<img src="/imgRes/upbit_sorting_trade_asc.png" width="400" height="700" /> <img src="/imgRes/upbit_sorting_trade_desc.png" width="400" height="700" />
 
 3. 필터 기능
     - 코인명 혹은 심볼을 통해 검색하여 해당 텍스트가 포함되어있는 비트코인 시세를 조회하는 기능
